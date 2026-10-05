@@ -49,10 +49,6 @@ export function createReminderMessage(
   meters: ReminderMeterSummary[],
   message: string
 ) {
-  // const meterSummary = meters.map((meter, index) =>
-  //   `${meter.name.trim() || `Medidor ${index + 1}`}: ${meter.consumption.toFixed(2)} kWh | Participacion: ${(meter.share * 100).toFixed(2)}% | Debe pagar: S/ ${meter.payment.toFixed(2)}`
-  // )
-
   const meterSummary = meters.map((meter, index) =>
     `${meter.name.trim() || `Medidor ${index + 1}`}: *S/ ${meter.payment.toFixed(2)}* (${(meter.share * 100).toFixed(2)}%)`
   )
@@ -65,11 +61,10 @@ export function createReminderMessage(
     }),
     { consumption: 0, share: 0, payment: 0 }
   )
-  //const totalSummary = `Total medidores: ${totals.consumption.toFixed(2)} kWh | Participacion: ${(totals.share * 100).toFixed(2)}% | Total a cobrar: S/ ${totals.payment.toFixed(2)}`
   const totalSummary = `Total del recibo: *S/ ${totals.payment.toFixed(2)}* (${(totals.share * 100).toFixed(2)}%)`
 
   return [
-    `\nResumen de cobro - Suministro ${supplyNumber} (${period})`,
+    `Resumen de cobro - Suministro ${supplyNumber} (${period})`,
     ...meterSummary,
     totalSummary,
     '',
