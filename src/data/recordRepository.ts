@@ -15,7 +15,7 @@ async function request(url: string, options?: RequestInit): Promise<BillingRecor
   const response = await fetch(url, options)
   if (!response.ok) {
     const error = await response.json().catch(() => null) as { message?: string } | null
-    throw new Error(error?.message ?? 'No fue posible guardar los registros.')
+    throw new Error(error?.message ?? 'No fue posible guardar los registros. recordRepository.ts')
   }
   return response.json() as Promise<BillingRecord[]>
 }

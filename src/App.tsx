@@ -190,7 +190,7 @@ export default function App() {
 			}
 		} catch (error) {
 			setStorageMessage(
-				error instanceof Error ? error.message : 'No se pudo guardar el registro.'
+				error instanceof Error ? error.message : 'No se pudo guardar el registro - App.tsx.'
 			);
 		}
 	}
