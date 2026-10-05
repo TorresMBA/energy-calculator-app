@@ -1,22 +1,21 @@
-# Aplicación de una sola página (Angular, React, Vue) ya compilada, servida por nginx
-# sin privilegios en el puerto 8080.
-# Contexto de build: la carpeta con index.html (dist/<proyecto>/browser en Angular, dist en Vite).
-# A diferencia de `static`, lo que no es un archivo devuelve index.html: el enrutador
-# del SPA resuelve la ruta en el navegador y recargar una ruta interna no da 404.
-ARG NGINX_VERSION=1.30
-FROM nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine
+# Empaqueta una app Node.js. Contexto de build: el código con su package.json.
+# La app debe escuchar en process.env.PORT y tener un script "start".
+ARG NODE_VERSION=22
+FROM node:${NODE_VERSION}-alpine
 
-COPY <<'EOF' /etc/nginx/conf.d/default.conf
-server {
-    listen 8080;
-    root /usr/share/nginx/html;
-    index index.html;
+ENV NODE_ENV=production \
+    PORT=8080
 
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-}
-EOF
+WORKDIR /app
+# Las dependencias van primero: la capa se reutiliza mientras no cambien los package*.json
+COPY package*.json ./
+# La caché de npm vive en la caché de build del host, no en la imagen
+RUN --mount=type=cache,target=/root/.npm if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi
 
-COPY . /usr/share/nginx/html
+COPY server.mjs ./
+COPY dist ./dist
+
 EXPOSE 8080
+USER node
+
+CMD ["npm", "start"]
