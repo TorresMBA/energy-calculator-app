@@ -74,7 +74,7 @@ pipeline {
           steps {
             sh '''
               mercury-ci login
-              mercury-ci package spa "$DIST_DIR" "$APP" "$TAG"
+              mercury-ci package node . "$APP" "$TAG"
               mercury-ci trivy-image "$(mercury-ci image-ref "$APP" "$TAG")"
             '''
           }
